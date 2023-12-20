@@ -1,0 +1,44 @@
+import psycopg2
+import csv
+
+with open('races.csv', 'r') as f:
+	reader = csv.reader(f)
+	next(reader)
+	for row in reader:
+		cur.execute(
+		"INSERT INTO formula1 VALUES (%s, %s, %s, %s, %s)",
+		row
+)
+conn.commit()
+
+--------------------------------------------------------------------------------------------------------------
+
+import csv
+raceDict = {}
+racesFile = open('races.csv')
+racesDictReader = csv.DictReader(racesFile)
+for row in racesDictReader:
+    raceDict[row['raceid']] = row
+
+resultsDict = {}
+resultsFile = open('results.csv')
+resultsDictReader = csv.DictReader(resultsFile)
+for row in resultsDictReader:
+    currentRowRaceId = row['raceId']
+    if currentRowRaceId in resultsDict:
+        existingList = resultsDict[currentRowRaceId]
+        existingList.append(row)
+    else:
+        resultsList = []
+        resultsList.append(row)
+        resultsDict[currentRowRaceId] = resultsList
+
+for key in raceDict:
+    currentRaceId = key
+    currentRaceDict = raceDict[key]
+    currentRaceName = currentRaceDict['name']
+    currentRaceResultsList = resultsDict[currentRaceId]
+    for raceresultsDict in currentRaceResultsList:
+        currentDriverName = raceresultsDict['driverName']
+        currentDriverPosition = raceresultsDict['positionOrder']
+        print(currentRaceId, currentRaceName, currentDriverName, currentDriverPosition)
