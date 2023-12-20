@@ -1,0 +1,35 @@
+import sys
+
+text_file_name = sys.argv[1]
+text_file = open(text_file_name + ".txt", "r")
+lines = text_file.readlines()
+
+raceid = sys.argv[2]
+
+new_lines = []
+
+for x in range(len(lines)):
+	newString = lines[x].replace("(",",")
+	newString = newString.replace(")",",")
+	newString = newString.replace("Jnr","")
+	newString = newString.replace(" ",",")
+	newString = newString.replace("\t",",")
+	newString = newString.replace(",,",",")
+	newString = newString.replace("\n","")
+	comma_count = newString.count(',')
+	commas_needed = 22 - comma_count
+	newString += "," * commas_needed
+	if len(new_lines) > 0:
+		newString += raceid
+	newString = newString + "\n"
+	new_lines.append(newString)
+
+
+text_file.close()
+
+new_file = open(text_file_name + ".csv", "w")
+
+for line in new_lines:
+	new_file.write(line)
+
+new_file.close()
